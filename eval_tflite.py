@@ -17,9 +17,11 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 parser = argparse.ArgumentParser()
 parser.add_argument('--net_id', type=str, help='net id of the model')
 # dataset args.
-parser.add_argument('--dataset', default='imagenet', type=str)
-parser.add_argument('--data-dir', default='/dataset/imagenet/val',
-                    help='path to validation data')
+parser.add_argument('--dataset', default='cifar10', type=str, choices=['imagenet', 'vww', 'cifar10'])
+parser.add_argument('--data-dir', default='./data/cifar10',
+                    help='path to validation data root')
+parser.add_argument('--download', action='store_true',
+                    help='download CIFAR-10 automatically if not found')
 parser.add_argument('--batch-size', type=int, default=256,
                     help='input batch size for training')
 parser.add_argument('-j', '--workers', default=16, type=int, metavar='N',
@@ -42,6 +44,16 @@ def get_val_dataset(resolution):
             transforms.Resize((resolution, resolution)),  # if center crop, the person might be excluded
             transforms.ToTensor(),
         ])
+    elif args.dataset == 'cifar10':
+        val_transform = transforms.Compose([
+            transforms.Resize((resolution, resolution)),
+            transforms.ToTensor(),
+        ])
+        val_dataset = datasets.CIFAR10(root=args.data_dir, train=False, transform=val_transform, download=args.download)
+        val_loader = torch.utils.data.DataLoader(
+            val_dataset, batch_size=args.batch_size,
+            shuffle=False, **kwargs)
+        return val_loader
     else:
         raise NotImplementedError
     val_dataset = datasets.ImageFolder(args.data_dir, transform=val_transform)

@@ -4,6 +4,7 @@ import torch.nn as nn
 
 __all__ = [
     'rm_bn_from_net', 'get_net_device', 'count_parameters', 'count_net_flops',
+    'count_net_user_flops',
     'count_peak_activation_size',
 ]
 
@@ -47,6 +48,11 @@ def count_net_flops(model, data_shape):
     total_macs = profile_macs(model, torch.randn(*data_shape).to(get_net_device(model)))
     del model
     return total_macs
+
+
+def count_net_user_flops(model, data_shape):
+    # User-facing FLOPs convention counts multiply and add separately.
+    return 2 * count_net_flops(model, data_shape)
 
 
 def count_peak_activation_size(net, data_shape=(1, 3, 224, 224)):

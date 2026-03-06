@@ -69,13 +69,13 @@ tflite_path = download_tflite(net_id="mcunet-in3")
 To evaluate the accuracy of PyTorch `fp32` models, run:
 
 ```bash
-python eval_torch.py --net_id mcunet-in2 --dataset {imagenet/vww} --data-dir PATH/TO/DATA/val
+python eval_torch.py --net_id mcunet-in2 --dataset {cifar10/imagenet/vww} --data-dir ./data/cifar10
 ```
 
 To evaluate the accuracy of TF-Lite `int8` models, run:
 
 ```bash
-python eval_tflite.py --net_id mcunet-in2 --dataset {imagenet/vww} --data-dir PATH/TO/DATA/val
+python eval_tflite.py --net_id mcunet-in2 --dataset {cifar10/imagenet/vww} --data-dir ./data/cifar10
 ```
 
 ### Model List
@@ -83,6 +83,7 @@ python eval_tflite.py --net_id mcunet-in2 --dataset {imagenet/vww} --data-dir PA
 - Note that all the **latency**, **SRAM**, and **Flash** usage are profiled with **TinyEngine** on STM32F746.
 - Here we only provide the `int8` quantized modes. `int4` quantized models (as shown in the paper) can further push the accuracy-memory trade-off, but lacking a general format support.
 - For accuracy (top1, top-5), we report the accuracy of `fp32`/`int8` models respectively
+- In the evaluation scripts, user-facing FLOPs follow the `FLOPs = 2 x MACs` convention.
 
 The **ImageNet** model list:
 
